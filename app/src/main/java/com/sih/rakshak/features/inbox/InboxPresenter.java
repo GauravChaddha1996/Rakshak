@@ -46,7 +46,7 @@ public class InboxPresenter implements InboxPresenterVI {
         return Session.getInstance(getProps(),
                 new javax.mail.Authenticator() {
                     protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(CONSTANTS.password, CONSTANTS.password);
+                        return new PasswordAuthentication(CONSTANTS.username, CONSTANTS.password);
                     }
                 });
     }

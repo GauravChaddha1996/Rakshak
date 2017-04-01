@@ -1,9 +1,11 @@
 package com.sih.rakshak.features.inbox;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,6 +26,7 @@ import com.sih.rakshak.features.inbox.helper.EndlessRecyclerOnScrollListener;
 import com.sih.rakshak.features.inbox.helper.InboxItemTouchCallback;
 import com.sih.rakshak.features.inbox.helper.ItemClickSupport;
 import com.sih.rakshak.features.inbox.helper.RVAdapter;
+import com.sih.rakshak.features.sendmail.SendMailActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +35,7 @@ import javax.mail.Message;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -52,6 +56,8 @@ public class InboxFragment extends BaseFragment implements InboxVI, DeleteInterf
     RelativeLayout error;
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
+    @BindView(R.id.sendFab)
+    FloatingActionButton sendFab;
     private RVAdapter adapter;
     private List<Message> data = new ArrayList<>();
     private InboxItemTouchCallback itemTouchCallback;
@@ -167,5 +173,9 @@ public class InboxFragment extends BaseFragment implements InboxVI, DeleteInterf
         adapter.setData(data);
     }
 
+    @OnClick(R.id.sendFab)
+    void sendEmail() {
+        startActivity(new Intent(getActivity(), SendMailActivity.class));
+    }
 
 }

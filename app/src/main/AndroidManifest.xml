@@ -13,6 +13,7 @@
         <activity
             android:name=".features.HomeActivity"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,10 +21,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
-            android:name=".features.mail.MailActivity"
-            android:label="@string/title_activity_mail"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:name=".features.sendmail.SendMailActivity"
+            android:parentActivityName=".features.HomeActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

@@ -105,10 +105,10 @@ public class MailFragment extends BaseFragment {
                     .subscribeOn(Schedulers.io())
                     .subscribe(s -> {
                         body = s;
-                        toUser.setText(toAddress);
-                        ccBcc.setText(ccAddress + "\n" + bccAddress);
-                        fromUser.setText(fromAddress);
-                        emailSubject.setText(subject);
+                        toUser.setText("To: " + toAddress);
+                        ccBcc.setText("CC: " + ccAddress + "\nBCC: " + bccAddress);
+                        fromUser.setText("From: " + fromAddress);
+                        emailSubject.setText("Subject: " + subject);
                         dateAndTime.setText(dateTime);
                         emailBody.setText(body);
                         content(content, loading, error);
