@@ -3,6 +3,8 @@ package com.sih.rakshak.features.notes;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.sih.rakshak.R;
+
 /**
  * Created by ManikantaInugurthi on 1/4/17 for Rakshak.
  */

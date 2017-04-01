@@ -1,5 +1,6 @@
 package com.sih.rakshak.features;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
@@ -15,6 +16,7 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.sih.rakshak.R;
+import com.sih.rakshak.RegisterActivity;
 import com.sih.rakshak.base.BaseFragment;
 import com.sih.rakshak.features.bin.BinFragment;
 import com.sih.rakshak.features.inbox.InboxFragment;
@@ -25,10 +27,21 @@ import com.sih.rakshak.features.notes.NotesItem;
 import com.sih.rakshak.features.sent.SentFragment;
 import com.sih.rakshak.features.settings.SettingsFragment;
 
+import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.UnrecoverableEntryException;
+import java.security.cert.CertificateException;
+
+import javax.crypto.NoSuchPaddingException;
 import javax.mail.Message;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import devliving.online.securedpreferencestore.SecuredPreferenceStore;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -53,10 +66,39 @@ public class HomeActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
-
+        checkUserAccount();
         setSupportActionBar(toolbar);
         setUpNavView();
         setFragment(FragmentIds.INBOX);
+    }
+
+    private void checkUserAccount() {
+        try {
+            SecuredPreferenceStore prefStore = SecuredPreferenceStore.getSharedInstance(getApplicationContext());
+            if (prefStore.getString("username", null) == null) {
+                startActivity(new Intent(this, RegisterActivity.class));
+                finish();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (UnrecoverableEntryException e) {
+            e.printStackTrace();
+        } catch (InvalidAlgorithmParameterException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (NoSuchProviderException e) {
+            e.printStackTrace();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -65,8 +107,8 @@ public class HomeActivity extends AppCompatActivity
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             if (currentFragment.getBackToFragmentId() != null) {
-                if(currentFragment.getBackToFragmentId() == FragmentIds.NOTESDETAIL) {
-                    ((NotesDetailFragment)currentFragment).checkandsave();
+                if (currentFragment.getBackToFragmentId() == FragmentIds.NOTESDETAIL) {
+                    ((NotesDetailFragment) currentFragment).checkandsave();
                 }
                 setFragment(currentFragment.getBackToFragmentId());
 
@@ -164,7 +206,8 @@ public class HomeActivity extends AppCompatActivity
         if (currentFragment != null && idForFragment == currentFragment.getFragmentId()) {
             return;
         }
-        if(idForFragment == FragmentIds.NOTESDETAIL)((NotesDetailFragment)currentFragment).checkandsave();
+        if (idForFragment == FragmentIds.NOTESDETAIL)
+            ((NotesDetailFragment) currentFragment).checkandsave();
         BaseFragment newFragment = handleNavViewTransition(idForFragment);
         currentFragment = newFragment;
         FragmentManager manager = getSupportFragmentManager();
