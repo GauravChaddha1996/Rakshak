@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/notes_card"
+    android:layout_width="match_parent"
+    android:layout_margin="4dp"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:textSize="25sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:text="Title"
+            android:singleLine="true"
+            android:id="@+id/notes_title"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Some Description"
+            android:maxLines="4"
+            android:gravity="center"
+            android:ellipsize="end"
+            android:textSize="20sp"
+            android:id="@+id/notes_desc"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:singleLine="true"
+            android:layout_height="wrap_content"
+            android:text="28/10/1997"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:ellipsize="end"
+            android:id="@+id/notes_LastViewed"
+            />
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>
+

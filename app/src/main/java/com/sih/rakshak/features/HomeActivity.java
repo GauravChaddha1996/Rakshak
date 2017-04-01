@@ -19,7 +19,9 @@ import com.sih.rakshak.base.BaseFragment;
 import com.sih.rakshak.features.bin.BinFragment;
 import com.sih.rakshak.features.inbox.InboxFragment;
 import com.sih.rakshak.features.mail.MailFragment;
+import com.sih.rakshak.features.notes.NotesDetailFragment;
 import com.sih.rakshak.features.notes.NotesFragment;
+import com.sih.rakshak.features.notes.NotesItem;
 import com.sih.rakshak.features.sent.SentFragment;
 import com.sih.rakshak.features.settings.SettingsFragment;
 
@@ -43,6 +45,7 @@ public class HomeActivity extends AppCompatActivity
     DrawerLayout drawerLayout;
     private BaseFragment currentFragment;
     private Message message;
+    private NotesItem notesItem;
 
 
     @Override
@@ -62,7 +65,11 @@ public class HomeActivity extends AppCompatActivity
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             if (currentFragment.getBackToFragmentId() != null) {
+                if(currentFragment.getBackToFragmentId() == FragmentIds.NOTESDETAIL) {
+                    ((NotesDetailFragment)currentFragment).checkandsave();
+                }
                 setFragment(currentFragment.getBackToFragmentId());
+
             } else {
                 super.onBackPressed();
             }
@@ -144,6 +151,10 @@ public class HomeActivity extends AppCompatActivity
                 getSupportActionBar().setTitle("");
                 toReturnFragment = new MailFragment();
                 break;
+            case NOTESDETAIL:
+                getSupportActionBar().setTitle(notesItem.getLastViewed());
+                toReturnFragment = new NotesDetailFragment();
+                break;
         }
         return toReturnFragment;
     }
@@ -153,6 +164,7 @@ public class HomeActivity extends AppCompatActivity
         if (currentFragment != null && idForFragment == currentFragment.getFragmentId()) {
             return;
         }
+        if(idForFragment == FragmentIds.NOTESDETAIL)((NotesDetailFragment)currentFragment).checkandsave();
         BaseFragment newFragment = handleNavViewTransition(idForFragment);
         currentFragment = newFragment;
         FragmentManager manager = getSupportFragmentManager();
@@ -168,5 +180,13 @@ public class HomeActivity extends AppCompatActivity
 
     public void setMessage(Message message) {
         this.message = message;
+    }
+
+    public NotesItem getNotesItem() {
+        return notesItem;
+    }
+
+    public void setNotesItem(NotesItem notesItem) {
+        this.notesItem = notesItem;
     }
 }
