@@ -15,6 +15,13 @@ import com.sih.rakshak.R;
 import com.sih.rakshak.features.CONSTANTS;
 import com.sih.rakshak.features.Utils;
 
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -189,10 +196,10 @@ public class SendMailActivity extends AppCompatActivity {
                         InternetAddress.parse(to.getText().toString()));
 
                 // Set Subject: header field
-                message.setSubject(subject.getText().toString());
+                message.setSubject(encrypt(subject.getText().toString()));
 
                 // Now set the actual message
-                message.setText(body.getText().toString());
+                message.setText(encrypt(body.getText().toString()));
                 // Send message
                 Observable.just(1)
                         .observeOn(Schedulers.io())
@@ -200,7 +207,7 @@ public class SendMailActivity extends AppCompatActivity {
                             try {
                                 Transport.send(message);
                                 System.out.println("Sent message successfully....");
-                                Snackbar.make(from,"Sent mail successfully",Snackbar.LENGTH_LONG).show();
+                                Snackbar.make(from, "Sent mail successfully", Snackbar.LENGTH_LONG).show();
                             } catch (MessagingException e) {
                                 e.printStackTrace();
                             }
@@ -209,5 +216,19 @@ public class SendMailActivity extends AppCompatActivity {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    private String encrypt(String s) {
+        try {
+            Cipher cipher = Cipher.getInstance("RSA");
+            cipher.init(Cipher.ENCRYPT_MODE, Utils.getRSAPublicKey());
+            byte[] encryptedBytes = cipher.doFinal(s.getBytes());
+            String encrypted = new String(encryptedBytes);
+            return encrypted;
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException |
+                InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
+            e.printStackTrace();
+        }
+        return "Oh oh it went bad";
     }
 }

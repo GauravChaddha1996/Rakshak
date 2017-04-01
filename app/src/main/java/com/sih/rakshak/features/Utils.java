@@ -1,5 +1,9 @@
 package com.sih.rakshak.features;
 
+import java.security.GeneralSecurityException;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.PublicKey;
 import java.util.Properties;
 
 import javax.mail.PasswordAuthentication;
@@ -10,6 +14,8 @@ import javax.mail.Session;
  */
 
 public class Utils {
+    public static KeyPair keyPair = null;
+
     public static Properties getProps() {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
@@ -27,5 +33,29 @@ public class Utils {
                     }
                 });
     }
+
+    public static PublicKey getRSAPublicKey() {
+        return getKeyPair().getPublic();
+    }
+
+    private static KeyPair getKeyPair() {
+        if (keyPair == null) {
+            keyPair = generateKeys();
+        }
+        return keyPair;
+    }
+
+    private static KeyPair generateKeys() {
+        try {
+            // get instance of rsa cipher
+            KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+            keyGen.initialize(1024);            // initialize key generator
+            keyPair = keyGen.generateKeyPair(); // generate pair of keys
+        } catch (GeneralSecurityException e) {
+            System.out.println(e);
+        }
+        return keyPair;
+    }
+
 
 }
