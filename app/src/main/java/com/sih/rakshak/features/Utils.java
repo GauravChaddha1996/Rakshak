@@ -38,7 +38,7 @@ public class Utils {
         return getKeyPair().getPublic();
     }
 
-    private static KeyPair getKeyPair() {
+public static KeyPair getKeyPair() {
         if (keyPair == null) {
             keyPair = generateKeys();
         }

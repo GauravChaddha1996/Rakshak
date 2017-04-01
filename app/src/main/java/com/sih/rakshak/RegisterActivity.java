@@ -10,10 +10,12 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.sih.rakshak.features.HomeActivity;
+import com.sih.rakshak.features.Utils;
 
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
+import java.security.KeyPair;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -31,6 +33,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import rx.Observable;
 import rx.Single;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -83,19 +86,92 @@ public class RegisterActivity extends AppCompatActivity {
                     if (response.code() == 200) {
                         saveUsernamePassword();
                         try {
-                            Snackbar snackbar = Snackbar.make(password, response.body().string(), Snackbar.LENGTH_INDEFINITE);
-                            snackbar.setAction("Go to inbox", v -> {
-                                startActivity(new Intent(this, HomeActivity.class));
-                            }).show();
+                            Snackbar.make(password, response.body().string() +
+                                    "\nJust wrapping up.", Snackbar.LENGTH_INDEFINITE).show();
+                            Observable.just(1)
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(integer -> {
+                                        pgpKeysStore(username.getText().toString());
+                                    });
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     } else {
                         Log.d("tag", String.valueOf(response.code()));
                         Log.d("tag", String.valueOf(response.message()));
-                        Snackbar.make(password, "Error", Snackbar.LENGTH_LONG).show();
+                        try {
+                            Snackbar.make(password, response.body().string(), Snackbar.LENGTH_LONG).show();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, Throwable::printStackTrace);
+    }
+
+    void pgpKeysStore(String email_id) {
+        KeyPair keyPair = Utils.getKeyPair();
+        Single.create(singleSubscriber -> {
+            OkHttpClient client = new OkHttpClient();
+            MediaType mediaType = MediaType.parse("application/json");
+            RequestBody body = RequestBody.create(mediaType, "{\"email_id\":\"" + email_id + "\",\"public_key\":\"" +
+                    keyPair.getPublic().toString() + "\"}");
+            Request request = new Request.Builder()
+                    .url("https://pgpusers-af24.restdb.io/rest/user-details-test")
+                    .post(body)
+                    .addHeader("content-type", "application/json")
+                    .addHeader("x-apikey", "9b63be897efd04ca200d56700a7f1bdc93247")
+                    .addHeader("cache-control", "no-cache")
+                    .build();
+            try {
+                Response response = client.newCall(request).execute();
+                singleSubscriber.onSuccess(response);
+            } catch (IOException e) {
+                e.printStackTrace();
+                singleSubscriber.onError(e);
+            }
+        }).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(o -> {
+                    Response response = (Response) o;
+                    if (response.code() == 201) {
+                        savePgpKeys(keyPair);
+                        try {
+                            startActivity(new Intent(this, HomeActivity.class));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        Log.d("tag", String.valueOf(response.code()));
+                        Log.d("tag", String.valueOf(response.message()));
+                    }
+                }, Throwable::printStackTrace);
+    }
+
+    private void savePgpKeys(KeyPair keyPair) {
+        try {
+            SecuredPreferenceStore prefStore = SecuredPreferenceStore.getSharedInstance(getApplicationContext());
+            prefStore.edit().putString("publicKey", keyPair.getPublic().toString()).apply();
+            prefStore.edit().putString("privateKey", keyPair.getPrivate().toString()).apply();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (UnrecoverableEntryException e) {
+            e.printStackTrace();
+        } catch (InvalidAlgorithmParameterException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (NoSuchProviderException e) {
+            e.printStackTrace();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void saveUsernamePassword() {
