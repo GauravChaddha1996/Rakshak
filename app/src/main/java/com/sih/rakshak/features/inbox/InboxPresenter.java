@@ -129,6 +129,8 @@ public class InboxPresenter implements InboxPresenterVI {
                     for (Message message : messages) {
                         list.add(message);
                         message.getSubject();
+                        message.getFrom();
+                        message.getReceivedDate();
                     }
                     singleSubscriber.onSuccess(list);
                 }

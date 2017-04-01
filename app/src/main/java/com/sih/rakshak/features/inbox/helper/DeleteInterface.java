@@ -1,4 +1,4 @@
-package com.sih.rakshak.features.inbox;
+package com.sih.rakshak.features.inbox.helper;
 
 import javax.mail.Message;
 

@@ -1,4 +1,4 @@
-package com.sih.rakshak.features.inbox;
+package com.sih.rakshak.features.inbox.helper;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;

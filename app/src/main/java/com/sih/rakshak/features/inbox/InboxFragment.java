@@ -18,6 +18,10 @@ import android.widget.RelativeLayout;
 import com.sih.rakshak.R;
 import com.sih.rakshak.base.BaseFragment;
 import com.sih.rakshak.features.FragmentIds;
+import com.sih.rakshak.features.inbox.helper.DeleteInterface;
+import com.sih.rakshak.features.inbox.helper.EndlessRecyclerOnScrollListener;
+import com.sih.rakshak.features.inbox.helper.InboxItemTouchCallback;
+import com.sih.rakshak.features.inbox.helper.RVAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,6 +123,7 @@ public class InboxFragment extends BaseFragment implements InboxVI, DeleteInterf
         recyclerView.setAdapter(adapter);
         itemTouchCallback = new InboxItemTouchCallback(adapter, this);
         new ItemTouchHelper(itemTouchCallback).attachToRecyclerView(recyclerView);
+
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int current_page) {

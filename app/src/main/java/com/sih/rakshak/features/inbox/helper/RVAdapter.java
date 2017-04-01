@@ -1,4 +1,4 @@
-package com.sih.rakshak.features.inbox;
+package com.sih.rakshak.features.inbox.helper;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -41,6 +41,8 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RVViewHolder> {
         Message item = items.get(position);
         try {
             holder.emailSubject.setText(item.getSubject());
+            holder.from.setText(item.getFrom()[0].toString());
+            holder.dateAndTime.setText(item.getReceivedDate().toString());
         } catch (MessagingException e) {
             e.printStackTrace();
         }
@@ -59,7 +61,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RVViewHolder> {
         notifyDataSetChanged();
     }
 
-    void addData(List<Message> data) {
+    public void addData(List<Message> data) {
         int size = items.size();
         items.addAll(size, data);
         notifyDataSetChanged();
@@ -76,8 +78,12 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RVViewHolder> {
     }
 
     class RVViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.email_subject)
+        @BindView(R.id.from)
+        TextView from;
+        @BindView(R.id.emailSubject)
         TextView emailSubject;
+        @BindView(R.id.dateAndTime)
+        TextView dateAndTime;
 
         RVViewHolder(View view) {
             super(view);
