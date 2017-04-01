@@ -18,9 +18,12 @@ import com.sih.rakshak.R;
 import com.sih.rakshak.base.BaseFragment;
 import com.sih.rakshak.features.bin.BinFragment;
 import com.sih.rakshak.features.inbox.InboxFragment;
+import com.sih.rakshak.features.mail.MailFragment;
 import com.sih.rakshak.features.notes.NotesFragment;
 import com.sih.rakshak.features.sent.SentFragment;
 import com.sih.rakshak.features.settings.SettingsFragment;
+
+import javax.mail.Message;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,6 +42,8 @@ public class HomeActivity extends AppCompatActivity
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
     private BaseFragment currentFragment;
+    private Message message;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,6 +139,11 @@ public class HomeActivity extends AppCompatActivity
                 getSupportActionBar().setTitle(R.string.settings);
                 toReturnFragment = new SettingsFragment();
                 break;
+            case MAIL:
+                navView.setCheckedItem(R.id.nav_inbox);
+                getSupportActionBar().setTitle("");
+                toReturnFragment = new MailFragment();
+                break;
         }
         return toReturnFragment;
     }
@@ -152,4 +162,11 @@ public class HomeActivity extends AppCompatActivity
         appBarLayout.setExpanded(true, true);
     }
 
+    public Message getMessage() {
+        return message;
+    }
+
+    public void setMessage(Message message) {
+        this.message = message;
+    }
 }

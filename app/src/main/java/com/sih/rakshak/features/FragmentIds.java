@@ -5,5 +5,5 @@ package com.sih.rakshak.features;
  */
 
 public enum FragmentIds {
-    INBOX, SENT, BIN, NOTES, SETTINGS
+    INBOX, SENT, BIN, NOTES, MAIL, SETTINGS
 }

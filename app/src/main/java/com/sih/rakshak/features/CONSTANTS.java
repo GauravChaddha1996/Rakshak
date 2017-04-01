@@ -6,7 +6,7 @@ package com.sih.rakshak.features;
 
 public interface CONSTANTS {
     String host = "box.221b.tk";
-    String username = "us@box.221b.tk";
-    String password = "221B_sih2017";
+    String username = "us@221b.tk";
+    String password = "211B_sih2017";
 
 }

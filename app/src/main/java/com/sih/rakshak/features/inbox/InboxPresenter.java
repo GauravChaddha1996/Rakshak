@@ -117,12 +117,12 @@ public class InboxPresenter implements InboxPresenterVI {
                         end = messageCount;
                     }
                     if (end >= start) {
-                        messages = inbox.getMessages(start, end);
+                        messages = (Message[]) inbox.getMessages(start, end);
                     } else {
                         singleSubscriber.onError(new Throwable("End of list"));
                     }
                 } else {
-                    messages = inbox.getMessages();
+                    messages = (Message[]) inbox.getMessages();
                 }
                 list = new ArrayList<>();
                 if (messages != null) {

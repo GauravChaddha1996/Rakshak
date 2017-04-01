@@ -68,7 +68,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RVViewHolder> {
     }
 
 
-    Message getItem(int pos) {
+    public Message getItem(int pos) {
         return items.get(pos);
     }
 

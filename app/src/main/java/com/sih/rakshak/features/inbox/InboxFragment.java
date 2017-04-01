@@ -18,9 +18,11 @@ import android.widget.RelativeLayout;
 import com.sih.rakshak.R;
 import com.sih.rakshak.base.BaseFragment;
 import com.sih.rakshak.features.FragmentIds;
+import com.sih.rakshak.features.HomeActivity;
 import com.sih.rakshak.features.inbox.helper.DeleteInterface;
 import com.sih.rakshak.features.inbox.helper.EndlessRecyclerOnScrollListener;
 import com.sih.rakshak.features.inbox.helper.InboxItemTouchCallback;
+import com.sih.rakshak.features.inbox.helper.ItemClickSupport;
 import com.sih.rakshak.features.inbox.helper.RVAdapter;
 
 import java.util.ArrayList;
@@ -123,7 +125,10 @@ public class InboxFragment extends BaseFragment implements InboxVI, DeleteInterf
         recyclerView.setAdapter(adapter);
         itemTouchCallback = new InboxItemTouchCallback(adapter, this);
         new ItemTouchHelper(itemTouchCallback).attachToRecyclerView(recyclerView);
-
+        ItemClickSupport.addTo(recyclerView).setOnItemClickListener((recyclerView1, position, v) -> {
+            ((HomeActivity) getActivity()).setMessage(adapter.getItem(position));
+            ((HomeActivity) getActivity()).setFragment(FragmentIds.MAIL);
+        });
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int current_page) {
