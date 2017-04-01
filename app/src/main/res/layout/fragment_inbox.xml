@@ -14,32 +14,21 @@
             android:layout_height="match_parent"
             android:layout_marginBottom="48dp" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_alignParentBottom="true"
-            android:orientation="horizontal">
+            android:layout_alignParentBottom="true">
 
-            <Button
-                android:id="@+id/prevButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="50"
-                android:text="PREV" />
-
-            <Button
-                android:id="@+id/nextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="50"
-                android:text="NEXT" />
-        </LinearLayout>
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
     </RelativeLayout>
 
-    <include
-        layout="@layout/loading" />
+    <include layout="@layout/loading" />
 
-    <include
-        layout="@layout/error" />
+    <include layout="@layout/error" />
 
 </RelativeLayout>

@@ -1,6 +1,8 @@
 package com.sih.rakshak.features.inbox;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,7 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.sih.rakshak.R;
@@ -20,13 +22,10 @@ import com.sih.rakshak.features.FragmentIds;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.mail.Folder;
 import javax.mail.Message;
-import javax.mail.Store;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -39,25 +38,21 @@ public class InboxFragment extends BaseFragment implements InboxVI, DeleteInterf
     final String TAG = "InboxFragment";
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
-    @BindView(R.id.prevButton)
-    Button prevButton;
-    @BindView(R.id.nextButton)
-    Button nextButton;
     @BindView(R.id.content)
     RelativeLayout content;
     @BindView(R.id.loading)
     RelativeLayout loading;
     @BindView(R.id.error)
     RelativeLayout error;
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
     private RVAdapter adapter;
     private List<Message> data = new ArrayList<>();
     private InboxItemTouchCallback itemTouchCallback;
     private InboxPresenter presenter;
-    private Store store;
-    private Folder inbox;
-    private Folder bin;
 
     private int pageNumber = 1;
+    private LinearLayoutManager layoutManager;
 
     public InboxFragment() {
     }
@@ -95,17 +90,6 @@ public class InboxFragment extends BaseFragment implements InboxVI, DeleteInterf
                                 Snackbar.LENGTH_LONG).show());
     }
 
-    @OnClick(R.id.nextButton)
-    void nextPage() {
-        Log.d(TAG, "nextpage");
-
-    }
-
-    @OnClick(R.id.prevButton)
-    void prevPage() {
-        Log.d(TAG, "prevPage");
-
-    }
 
     @Override
     public int getPageNumber() {
@@ -128,12 +112,36 @@ public class InboxFragment extends BaseFragment implements InboxVI, DeleteInterf
 
     private void setRecyclerView() {
         Log.d(TAG, "setRecyclerView");
+        layoutManager = new LinearLayoutManager(getActivity());
         adapter = new RVAdapter(getActivity(), getData());
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
         itemTouchCallback = new InboxItemTouchCallback(adapter, this);
         new ItemTouchHelper(itemTouchCallback).attachToRecyclerView(recyclerView);
+        recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int current_page) {
+                pageNumber++;
+                presenter.fetchMoreObservable()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(messages -> {
+                            int pos = adapter.getItemCount();
+                            adapter.addData(messages);
+                            hideView(progressBar);
+                            recyclerView.smoothScrollToPosition(pos + 1);
+                        }, throwable -> {
+                            throwable.printStackTrace();
+                            hideView(progressBar);
+                        });
+            }
+        });
+    }
+
+    @Override
+    public void showProgressBar() {
+        new Handler(Looper.getMainLooper()).post(() -> showView(progressBar));
     }
 
     public List<Message> getData() {
@@ -148,5 +156,6 @@ public class InboxFragment extends BaseFragment implements InboxVI, DeleteInterf
         data = mailModels;
         adapter.setData(data);
     }
+
 
 }

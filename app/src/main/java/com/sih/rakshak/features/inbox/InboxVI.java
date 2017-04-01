@@ -6,4 +6,5 @@ package com.sih.rakshak.features.inbox;
 
 public interface InboxVI {
     int getPageNumber();
+    void showProgressBar();
 }

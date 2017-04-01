@@ -76,8 +76,8 @@ public class InboxPresenter implements InboxPresenterVI {
                 Log.d("InboxPresenter", String.valueOf(messageCount));
                 List<Message> list;
                 Message[] messages;
-                if (messageCount > 5) {
-                    messages = inbox.getMessages((vi.getPageNumber() * 5) - 4, vi.getPageNumber() * 5);
+                if (messageCount > 10) {
+                    messages = inbox.getMessages((vi.getPageNumber() * 10) - 9, vi.getPageNumber() * 10);
                 } else {
                     messages = inbox.getMessages();
                 }
@@ -87,6 +87,52 @@ public class InboxPresenter implements InboxPresenterVI {
                     message.getSubject();
                 }
                 singleSubscriber.onSuccess(list);
+            } catch (Exception e) {
+                singleSubscriber.onError(e);
+            }
+
+        });
+    }
+
+    public Single<List<Message>> fetchMoreObservable() {
+        return Single.create(singleSubscriber -> {
+            try {
+                vi.showProgressBar();
+                Store store = getStore();
+                store.connect(CONSTANTS.host, CONSTANTS.username, CONSTANTS.password);
+                Folder inbox = store.getFolder("inbox");
+                Folder bin = store.getFolder("Trash");
+                if (!bin.exists()) {
+                    bin.create(Folder.HOLDS_MESSAGES);
+                }
+                inbox.open(Folder.READ_WRITE);
+                int messageCount = inbox.getMessageCount();
+                Log.d("InboxPresenter", String.valueOf(messageCount));
+                List<Message> list;
+                Message[] messages = null;
+                if (messageCount > 10) {
+                    int start = (vi.getPageNumber() * 10) - 9;
+                    int end = vi.getPageNumber() * 10;
+                    if (end > messageCount) {
+                        end = messageCount;
+                    }
+                    if (end >= start) {
+                        messages = inbox.getMessages(start, end);
+                    } else {
+                        singleSubscriber.onError(new Throwable("End of list"));
+                    }
+                } else {
+                    messages = inbox.getMessages();
+                }
+                list = new ArrayList<>();
+                if (messages != null) {
+                    for (Message message : messages) {
+                        list.add(message);
+                        message.getSubject();
+                    }
+                    singleSubscriber.onSuccess(list);
+                }
+
             } catch (Exception e) {
                 singleSubscriber.onError(e);
             }

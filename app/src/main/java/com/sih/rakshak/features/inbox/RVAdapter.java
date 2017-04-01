@@ -59,11 +59,18 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RVViewHolder> {
         notifyDataSetChanged();
     }
 
-    public Message getItem(int pos) {
+    void addData(List<Message> data) {
+        int size = items.size();
+        items.addAll(size, data);
+        notifyDataSetChanged();
+    }
+
+
+    Message getItem(int pos) {
         return items.get(pos);
     }
 
-    public void remove(int pos) {
+    void remove(int pos) {
         items.remove(pos);
         notifyDataSetChanged();
     }
