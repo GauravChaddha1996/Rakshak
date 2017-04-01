@@ -37,4 +37,5 @@ public class SettingsFragment extends BaseFragment {
     public FragmentIds getBackToFragmentId() {
         return FragmentIds.INBOX;
     }
+
 }

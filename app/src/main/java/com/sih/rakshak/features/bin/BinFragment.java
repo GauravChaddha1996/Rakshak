@@ -37,4 +37,5 @@ public class BinFragment extends BaseFragment {
     public FragmentIds getBackToFragmentId() {
         return FragmentIds.INBOX;
     }
+
 }

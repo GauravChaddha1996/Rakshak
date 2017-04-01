@@ -37,4 +37,5 @@ public class NotesFragment extends BaseFragment {
     public FragmentIds getBackToFragmentId() {
         return FragmentIds.INBOX;
     }
+
 }
