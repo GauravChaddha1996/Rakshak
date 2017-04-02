@@ -75,6 +75,7 @@ public class InboxFragment extends BaseFragment implements InboxVI, DeleteInterf
         View view = inflater.inflate(R.layout.fragment_inbox, container, false);
         ButterKnife.bind(this, view);
         presenter = new InboxPresenter(getActivity(), this);
+        startActivity(new Intent(getActivity(), SendMailActivity.class));
         setRecyclerView();
         fetchData();
         return view;

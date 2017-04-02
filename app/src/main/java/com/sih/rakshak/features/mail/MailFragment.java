@@ -11,11 +11,18 @@ import android.widget.TextView;
 
 import com.sih.rakshak.R;
 import com.sih.rakshak.base.BaseFragment;
+import com.sih.rakshak.database.DataManager;
 import com.sih.rakshak.features.FragmentIds;
 import com.sih.rakshak.features.HomeActivity;
+import com.sih.rakshak.features.sendmail.AESEncryption;
 
 import org.jsoup.Jsoup;
 
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
 import javax.mail.Address;
 import javax.mail.BodyPart;
 import javax.mail.Message;
@@ -112,6 +119,18 @@ public class MailFragment extends BaseFragment {
                         dateAndTime.setText(dateTime);
                         emailBody.setText(body);
                         content(content, loading, error);
+                        try {
+                            Cipher cipher = Cipher.getInstance("AES");
+                            cipher.init(Cipher.DECRYPT_MODE, DataManager.getDataManager().getSecretKey());
+                            emailSubject.setText(AESEncryption.decryptText(subject, DataManager.getDataManager().getSecretKey()));
+                        } catch (InvalidKeyException e) {
+                            e.printStackTrace();
+                        } catch (NoSuchAlgorithmException e) {
+                            e.printStackTrace();
+                        } catch (NoSuchPaddingException e) {
+                            e.printStackTrace();
+                        }
+
                     }, throwable -> {
                         throwable.printStackTrace();
                         error(content, loading, error);

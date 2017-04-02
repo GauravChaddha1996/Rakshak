@@ -6,14 +6,13 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.google.gson.Gson;
 import com.sih.rakshak.R;
+import com.sih.rakshak.database.DataManager;
 import com.sih.rakshak.features.CONSTANTS;
 import com.sih.rakshak.features.Utils;
 
@@ -30,14 +29,11 @@ import javax.mail.internet.MimeMessage;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 import rx.Observable;
 import rx.Single;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class SendMailActivity extends AppCompatActivity {
@@ -204,19 +200,7 @@ public class SendMailActivity extends AppCompatActivity {
 
                 // Set Subject: header field
                 message.setSubject(encrypt(subject.getText().toString()));
-
-                getPublicKey(to.getText().toString())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.io())
-                        .subscribe(response -> {
-                            if (response.code() == 200) {
-                                Log.d("tag",response.body().toString());
-                                Log.d("tag",response.message());
-                            }
-                        }, Throwable::printStackTrace);
-                // Now set the actual message
-                message.setText(encrypt(body.getText().toString()));
-                // Send message
+                message.setText(secretKey + "\n" + encrypt(body.getText().toString()));
                 Observable.just(1)
                         .observeOn(Schedulers.io())
                         .subscribe(integer -> {
@@ -228,6 +212,57 @@ public class SendMailActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                         }, Throwable::printStackTrace);
+               /* getPublicKey("\"" + to.getText().toString() + "\"")
+                        .observeOn(Schedulers.io())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(response -> {
+                            if (response.code() == 200) {
+                                try {
+                                    String s = response.body().string();
+                                    //   Log.d("tag", response.body().string());
+                                    JsonArray jobj = new Gson().fromJson(s, JsonArray.class);
+                                    JsonObject o = (JsonObject) jobj.get(0);
+                                    publicKey = String.valueOf(o.get("public_key"));
+                                    Log.d("tga", publicKey);
+                                    Log.d("tga", Base64.encodeToString(Utils.toByteArray(Utils.getPublicKey(this)), Base64.DEFAULT));
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                Log.d("tag", response.message());
+                                // Now set the actual message
+                                try {
+                                    String s1 = encrypt(body.getText().toString());
+                                    //PublicKey key = (PublicKey) Utils.toObject(Base64.decode(publicKey.getBytes(), Base64.DEFAULT));
+                                    PublicKey key = Utils.getPublicKey(this);
+                                    Cipher cipher = Cipher.getInstance("RSA");
+                                    cipher.init(Cipher.ENCRYPT_MODE, key);
+                                    message.setText(Base64.encodeToString(cipher.doFinal(s1.getBytes()), Base64.DEFAULT));
+                                    Observable.just(1)
+                                            .observeOn(Schedulers.io())
+                                            .subscribe(integer -> {
+                                                try {
+                                                        Transport.send(message);
+                                                    System.out.println("Sent message successfully....");
+                                                    Snackbar.make(from, "Sent mail successfully", Snackbar.LENGTH_LONG).show();
+                                                } catch (MessagingException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }, Throwable::printStackTrace);
+                                } catch (MessagingException e) {
+                                    e.printStackTrace();
+                                } catch (NoSuchAlgorithmException e) {
+                                    e.printStackTrace();
+                                } catch (NoSuchPaddingException e) {
+                                    e.printStackTrace();
+                                } catch (InvalidKeyException e) {
+                                    e.printStackTrace();
+                                } catch (BadPaddingException e) {
+                                    e.printStackTrace();
+                                } catch (IllegalBlockSizeException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }, Throwable::printStackTrace);*/
             } catch (MessagingException e) {
                 throw new RuntimeException(e);
             }
@@ -236,28 +271,31 @@ public class SendMailActivity extends AppCompatActivity {
 
     private String encrypt(String s) {
         secretKey = AESEncryption.getSecretEncryptionKey();
+        DataManager.getDataManager().setSecretKey(secretKey);
         return AESEncryption.encryptText(s, secretKey);
+    }
+
+    private String decrypt(String s) {
+        secretKey = AESEncryption.getSecretEncryptionKey();
+        return AESEncryption.decryptText(s, secretKey);
     }
 
     public Single<Response> getPublicKey(String email) {
         return Single.create(singleSubscriber -> {
-            OkHttpClient client = new OkHttpClient();
-            MediaType mediaType = MediaType.parse("text/plain");
-            RequestBody body = RequestBody.create(mediaType, "q={\"email_id\":\"" + email + "\"}");
-            Request request = new Request.Builder()
-                    .url("https://pgpusers-af24.restdb.io/rest/user-details-test?q=%7B%22field%22%3A%22value%22%7D")
-                    .get()
-                    .addHeader("content-type", "application/json")
-                    .addHeader("x-apikey", "9b63be897efd04ca200d56700a7f1bdc93247")
-                    .addHeader("cache-control", "no-cache")
-                    .build();
-            try {
-                Response response = client.newCall(request).execute();
-                singleSubscriber.onSuccess(response);
-            } catch (IOException e) {
-                singleSubscriber.onError(e);
-                e.printStackTrace();
-            }
-        });
+                    OkHttpClient client = new OkHttpClient();
+                    Request request = new Request.Builder()
+                            .url("http://139.59.31.108:5000/getpublic?email_id=" + email)
+                            .get()
+                            .addHeader("cache-control", "no-cache")
+                            .build();
+                    try {
+                        Response response = client.newCall(request).execute();
+                        singleSubscriber.onSuccess(response);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        singleSubscriber.onError(e);
+                    }
+                }
+        );
     }
 }

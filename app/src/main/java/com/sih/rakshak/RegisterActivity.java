@@ -6,6 +6,7 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatRadioButton;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
@@ -171,10 +172,11 @@ public class RegisterActivity extends AppCompatActivity {
                             }
                         } else if (response.code() == 400) {
                             Toast.makeText(this, "Public key already exists", Toast.LENGTH_LONG).show();
+                            saveUsernamePassword();
                             startActivity(new Intent(this, HomeActivity.class));
                             Log.d("tag", String.valueOf(response.code()));
                             Log.d("tag", String.valueOf(response.message()));
-                        }else {
+                        } else {
                             Log.d("tag", String.valueOf(response.code()));
                             Log.d("tag", String.valueOf(response.message()));
                             try {
@@ -192,17 +194,20 @@ public class RegisterActivity extends AppCompatActivity {
     void pgpKeysStore(String email_id) {
         saveUsernamePassword();
         KeyPair keyPair = Utils.getKeyPair();
+        Log.d("public key", String.valueOf(keyPair.getPublic()));
+        String publicKey = "";
+        try {
+            publicKey = Base64.encodeToString(Utils.toByteArray(keyPair.getPublic()), Base64.DEFAULT);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.d("tag", publicKey);
+        String finalPublicKey = publicKey;
         Single.create(singleSubscriber -> {
             OkHttpClient client = new OkHttpClient();
-            MediaType mediaType = MediaType.parse("application/json");
-            RequestBody body = RequestBody.create(mediaType, "{\"email_id\":\"" + email_id + "\",\"public_key\":\"" +
-                    keyPair.getPublic().toString() + "\"}");
-            Log.d("public key", String.valueOf(keyPair.getPublic().getEncoded()));
             Request request = new Request.Builder()
-                    .url("https://pgpusers-af24.restdb.io/rest/user-details-test")
-                    .post(body)
-                    .addHeader("content-type", "application/json")
-                    .addHeader("x-apikey", "9b63be897efd04ca200d56700a7f1bdc93247")
+                    .url("http://139.59.31.108:5000/addpublic?email_id=" + email_id + "&public_key=" + finalPublicKey)
+                    .get()
                     .addHeader("cache-control", "no-cache")
                     .build();
             try {
@@ -216,7 +221,7 @@ public class RegisterActivity extends AppCompatActivity {
                 .subscribeOn(Schedulers.io())
                 .subscribe(o -> {
                     Response response = (Response) o;
-                    if (response.code() == 201) {
+                    if (response.code() == 200) {
                         savePgpKeys(keyPair);
                         try {
                             startActivity(new Intent(this, HomeActivity.class));
@@ -235,8 +240,8 @@ public class RegisterActivity extends AppCompatActivity {
     private void savePgpKeys(KeyPair keyPair) {
         try {
             SecuredPreferenceStore prefStore = SecuredPreferenceStore.getSharedInstance(getApplicationContext());
-            prefStore.edit().putString("publicKey", keyPair.getPublic().toString()).apply();
-            prefStore.edit().putString("privateKey", keyPair.getPrivate().toString()).apply();
+            prefStore.edit().putString("publicKey", Base64.encodeToString(Utils.toByteArray(keyPair.getPublic()), Base64.DEFAULT)).apply();
+            prefStore.edit().putString("privateKey", Base64.encodeToString(Utils.toByteArray(keyPair.getPrivate()), Base64.DEFAULT)).apply();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (CertificateException e) {

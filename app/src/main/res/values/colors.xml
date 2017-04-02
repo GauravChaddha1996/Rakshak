@@ -8,6 +8,7 @@
     <color name="secondaryText">#757575</color>
     <color name="icons">#FFFFFF</color>
     <color name="divider">#BDBDBD</color>
+    <color name="secondaryHint">#FF4081</color>
     <color name="card_text">#FF4081</color>
     <color name="primary_text_material_light">#212121</color>
     <color name="secondary_text_material_light">#757575</color>

@@ -17,6 +17,7 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
 
 public class DataManager {
     private static DataManager dataManager;
@@ -25,7 +26,7 @@ public class DataManager {
     private String KEY_ALIAS = "rakshak_up";
     private String FIXED_IV = "rakshak";
     private Key key = null;
-
+    SecretKey secretKey =null;
     private DataManager() {
 
     }
@@ -121,5 +122,13 @@ public class DataManager {
             e.printStackTrace();
         }
         return new byte[0];
+    }
+
+    public SecretKey getSecretKey() {
+        return secretKey;
+    }
+
+    public void setSecretKey(SecretKey secretKey) {
+        this.secretKey = secretKey;
     }
 }
