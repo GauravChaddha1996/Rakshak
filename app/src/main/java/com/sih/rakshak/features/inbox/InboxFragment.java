@@ -75,7 +75,6 @@ public class InboxFragment extends BaseFragment implements InboxVI, DeleteInterf
         View view = inflater.inflate(R.layout.fragment_inbox, container, false);
         ButterKnife.bind(this, view);
         presenter = new InboxPresenter(getActivity(), this);
-        startActivity(new Intent(getActivity(), SendMailActivity.class));
         setRecyclerView();
         fetchData();
         return view;
@@ -112,6 +111,7 @@ public class InboxFragment extends BaseFragment implements InboxVI, DeleteInterf
     private void fetchData() {
         Log.d(TAG, "fetchData");
         loading(content, loading, error);
+        showView(content);
         presenter.fetchObservable()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
@@ -121,7 +121,6 @@ public class InboxFragment extends BaseFragment implements InboxVI, DeleteInterf
                             error(content, loading, error);
                         });
     }
-
 
     private void setRecyclerView() {
         Log.d(TAG, "setRecyclerView");

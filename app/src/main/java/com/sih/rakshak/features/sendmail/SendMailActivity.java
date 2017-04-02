@@ -199,8 +199,8 @@ public class SendMailActivity extends AppCompatActivity {
                         InternetAddress.parse(to.getText().toString()));
 
                 // Set Subject: header field
-                message.setSubject(encrypt(subject.getText().toString()));
-                message.setText(secretKey + "\n" + encrypt(body.getText().toString()));
+                message.setSubject(Utils.encrypt(subject.getText().toString(),Utils.getSecretEncryptionKey()));
+                message.setText(Utils.encrypt(body.getText().toString(),Utils.getSecretEncryptionKey()));
                 Observable.just(1)
                         .observeOn(Schedulers.io())
                         .subscribe(integer -> {
@@ -265,6 +265,8 @@ public class SendMailActivity extends AppCompatActivity {
                         }, Throwable::printStackTrace);*/
             } catch (MessagingException e) {
                 throw new RuntimeException(e);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }

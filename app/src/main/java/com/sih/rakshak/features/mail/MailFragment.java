@@ -11,18 +11,12 @@ import android.widget.TextView;
 
 import com.sih.rakshak.R;
 import com.sih.rakshak.base.BaseFragment;
-import com.sih.rakshak.database.DataManager;
 import com.sih.rakshak.features.FragmentIds;
 import com.sih.rakshak.features.HomeActivity;
-import com.sih.rakshak.features.sendmail.AESEncryption;
+import com.sih.rakshak.features.Utils;
 
 import org.jsoup.Jsoup;
 
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-
-import javax.crypto.Cipher;
-import javax.crypto.NoSuchPaddingException;
 import javax.mail.Address;
 import javax.mail.BodyPart;
 import javax.mail.Message;
@@ -115,22 +109,14 @@ public class MailFragment extends BaseFragment {
                         toUser.setText("To: " + toAddress);
                         ccBcc.setText("CC: " + ccAddress + "\nBCC: " + bccAddress);
                         fromUser.setText("From: " + fromAddress);
-                        emailSubject.setText("Subject: " + subject);
-                        dateAndTime.setText(dateTime);
-                        emailBody.setText(body);
-                        content(content, loading, error);
                         try {
-                            Cipher cipher = Cipher.getInstance("AES");
-                            cipher.init(Cipher.DECRYPT_MODE, DataManager.getDataManager().getSecretKey());
-                            emailSubject.setText(AESEncryption.decryptText(subject, DataManager.getDataManager().getSecretKey()));
-                        } catch (InvalidKeyException e) {
-                            e.printStackTrace();
-                        } catch (NoSuchAlgorithmException e) {
-                            e.printStackTrace();
-                        } catch (NoSuchPaddingException e) {
+                            emailSubject.setText("Subject: " + Utils.decrypt(subject, Utils.getSecretEncryptionKey()));
+                            emailBody.setText(Utils.decrypt(body, Utils.getSecretEncryptionKey()));
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
-
+                        dateAndTime.setText(dateTime);
+                        content(content, loading, error);
                     }, throwable -> {
                         throwable.printStackTrace();
                         error(content, loading, error);

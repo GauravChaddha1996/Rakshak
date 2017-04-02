@@ -1,7 +1,7 @@
 package com.sih.rakshak.features;
 
 import android.content.Context;
-import android.util.Base64;
+import android.util.Log;
 
 import com.sih.rakshak.features.sendmail.SendMailActivity;
 
@@ -11,24 +11,16 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.security.GeneralSecurityException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.UnrecoverableEntryException;
-import java.security.cert.CertificateException;
 import java.util.Properties;
 
-import javax.crypto.NoSuchPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
-
-import devliving.online.securedpreferencestore.SecuredPreferenceStore;
 
 /**
  * Created by Batdroid on 1/4/17 for Rakshak.
@@ -147,61 +139,47 @@ public class Utils {
         return new String(bytes);
     }
 
-    public static PrivateKey getPrivateKey(Context context) {
-        try {
-            SecuredPreferenceStore prefStore = SecuredPreferenceStore.getSharedInstance(context);
-            String s = prefStore.getString("privateKey", null);
-            return (PrivateKey) Utils.toObject(Base64.decode(s.getBytes(), Base64.DEFAULT));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (CertificateException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (UnrecoverableEntryException e) {
-            e.printStackTrace();
-        } catch (InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-        } catch (NoSuchProviderException e) {
-            e.printStackTrace();
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
+
+    public static String encrypt(String plainText, SecretKey secretKey)
+            throws Exception {
+        byte[] plainTextByte = plainText.getBytes();
+
+        Cipher cipher = Cipher.getInstance("AES");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+        byte[] encryptedByte = cipher.doFinal(plainTextByte);
+        Base64.Encoder encoder = Base64.getEncoder();
+        String encryptedText = encoder.encodeToString(encryptedByte);
+        return encryptedText;
     }
 
-    public static PublicKey getPublicKey(Context context) {
-        try {
-            SecuredPreferenceStore prefStore = SecuredPreferenceStore.getSharedInstance(context);
-            String s = prefStore.getString("publicKey", null);
-            return (PublicKey) Utils.toObject(Base64.decode(s.getBytes(), Base64.DEFAULT));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (CertificateException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (UnrecoverableEntryException e) {
-            e.printStackTrace();
-        } catch (InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-        } catch (NoSuchProviderException e) {
-            e.printStackTrace();
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public static String decrypt(String encryptedText, SecretKey secretKey)
+            throws Exception {
+        Base64.Decoder decoder = Base64.getDecoder();
+        byte[] encryptedTextByte = decoder.decode(encryptedText);
+        Cipher cipher = Cipher.getInstance("AES");
+        cipher.init(Cipher.DECRYPT_MODE, secretKey);
+        byte[] decryptedByte = cipher.doFinal(encryptedTextByte);
+        String decryptedText = new String(decryptedByte);
+        return decryptedText;
     }
+
+    public static SecretKey getSecretEncryptionKey() {
+        String s = "44281957601984106604102934118936";
+        Log.d("tag", String.valueOf(s.getBytes().length));
+        SecretKey key = new SecretKeySpec(s.getBytes(), 0, s.getBytes().length, "AES");
+        return key;/*
+        if (DataManager.getDataManager().getSecretKey() == null) {
+            KeyGenerator generator = null;
+            try {
+                generator = KeyGenerator.getInstance("AES");
+                generator.init(128); // The AES key size in number of bits
+                SecretKey secKey = generator.generateKey();
+                DataManager.getDataManager().setSecretKey(secKey);
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+        }
+        return DataManager.getDataManager().getSecretKey();*/
+    }
+
 }
