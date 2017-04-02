@@ -26,7 +26,7 @@
                 android:id="@+id/username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Username"
+                android:hint="Email"
                 android:inputType="textEmailAddress" />
         </android.support.design.widget.TextInputLayout>
 
@@ -50,33 +50,69 @@
                 android:inputType="textPassword" />
         </android.support.design.widget.TextInputLayout>
 
-        <EditText
-            android:id="@+id/imaphost"
-            android:layout_width="match_parent"
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/gmail"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Imap host"
-            android:inputType="text" />
+            android:checked="true"
+            android:text="Gmail Service" />
 
-        <EditText
-            android:id="@+id/imapPort"
-            android:layout_width="match_parent"
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/yahooService"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Imap port"
-            android:inputType="number" />
+            android:text="Yahoo Service" />
 
-        <EditText
-            android:id="@+id/smtphost"
-            android:layout_width="match_parent"
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/rakshak"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Smtp host"
-            android:inputType="text" />
+            android:text="Our Email Service" />
 
-        <EditText
-            android:id="@+id/smtpPort"
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/otherService"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Other Service" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Smtp port"
-            android:inputType="number" />
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/imaphost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Imap Host"
+                android:inputType="text"
+                android:text="imap.gmail.com" />
+
+            <EditText
+                android:id="@+id/imapPort"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Imap Port"
+                android:inputType="number"
+                android:text="993" />
+
+            <EditText
+                android:id="@+id/smtphost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Smtp Host"
+                android:inputType="text"
+                android:text="smtp.gmail.com" />
+
+            <EditText
+                android:id="@+id/smtpPort"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Smtp port"
+                android:inputType="number"
+                android:text="587" />
+
+        </LinearLayout>
 
         <Button
             android:id="@+id/signup_button"
