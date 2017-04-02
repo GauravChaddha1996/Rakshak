@@ -61,7 +61,7 @@ public class SendMailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_mail);
         ButterKnife.bind(this);
-        from.setText(CONSTANTS.username);
+        from.setText(CONSTANTS.getUsername(this));
         createListeners();
     }
 
@@ -184,7 +184,7 @@ public class SendMailActivity extends AppCompatActivity {
     void sendEmail() {
         if (errorChecks()) {
             try {
-                Session session = Utils.getSession();
+                Session session = Utils.getSmtpSession(this);
                 // Create a default MimeMessage object.
                 Message message = new MimeMessage(session);
 

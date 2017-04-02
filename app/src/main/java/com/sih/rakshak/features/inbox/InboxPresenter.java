@@ -1,20 +1,19 @@
 package com.sih.rakshak.features.inbox;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.sih.rakshak.features.CONSTANTS;
+import com.sih.rakshak.features.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import javax.mail.Flags;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.NoSuchProviderException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
 import javax.mail.Store;
 
 import rx.Single;
@@ -25,36 +24,19 @@ import rx.Single;
 
 public class InboxPresenter implements InboxPresenterVI {
 
+    private final Context context;
     InboxVI vi;
 
-    public InboxPresenter(InboxVI vi) {
+    public InboxPresenter(Context context, InboxVI vi) {
+        this.context = context;
         this.vi = vi;
     }
 
-    @Override
-    public Properties getProps() {
-        Properties props = new Properties();
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", CONSTANTS.host);
-        props.put("mail.smtp.port", "587");
-        return props;
-    }
-
-    @Override
-    public Session getSession() {
-        return Session.getInstance(getProps(),
-                new javax.mail.Authenticator() {
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(CONSTANTS.username, CONSTANTS.password);
-                    }
-                });
-    }
 
     @Override
     public Store getStore() {
         try {
-            return getSession().getStore("imaps");
+            return Utils.getSession(context).getStore("imaps");
         } catch (NoSuchProviderException e) {
             e.printStackTrace();
         }
@@ -65,7 +47,9 @@ public class InboxPresenter implements InboxPresenterVI {
         return Single.create(singleSubscriber -> {
             try {
                 Store store = getStore();
-                store.connect(CONSTANTS.host, CONSTANTS.username, CONSTANTS.password);
+                Log.d("tag",CONSTANTS.getUsername(context));
+                Log.d("tag",CONSTANTS.getPassword(context));
+                store.connect(CONSTANTS.host, CONSTANTS.getUsername(context), CONSTANTS.getPassword(context));
                 Folder inbox = store.getFolder("inbox");
                 Folder bin = store.getFolder("Trash");
                 if (!bin.exists()) {
@@ -99,7 +83,7 @@ public class InboxPresenter implements InboxPresenterVI {
             try {
                 vi.showProgressBar();
                 Store store = getStore();
-                store.connect(CONSTANTS.host, CONSTANTS.username, CONSTANTS.password);
+                store.connect(CONSTANTS.host, CONSTANTS.getUsername(context), CONSTANTS.getPassword(context));
                 Folder inbox = store.getFolder("inbox");
                 Folder bin = store.getFolder("Trash");
                 if (!bin.exists()) {
@@ -146,7 +130,7 @@ public class InboxPresenter implements InboxPresenterVI {
             try {
                 try {
                     Store store1 = getStore();
-                    store1.connect(CONSTANTS.host, CONSTANTS.username, CONSTANTS.password);
+                    store1.connect(CONSTANTS.host, CONSTANTS.getUsername(context), CONSTANTS.getPassword(context));
                     Folder inbox1 = store1.getFolder("inbox");
                     Folder bin1 = store1.getFolder("Trash");
                     if (!bin1.exists()) {

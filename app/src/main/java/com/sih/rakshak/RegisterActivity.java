@@ -2,7 +2,6 @@ package com.sih.rakshak;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -33,7 +32,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import rx.Observable;
 import rx.Single;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -60,7 +58,8 @@ public class RegisterActivity extends AppCompatActivity {
 
     @OnClick(R.id.signup_button)
     void signUp() {
-        Single.create(singleSubscriber -> {
+        pgpKeysStore(username.getText().toString());
+        /*Single.create(singleSubscriber -> {
             OkHttpClient client = new OkHttpClient();
             MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
             RequestBody body = RequestBody.create(mediaType, "email=" + username.getText().toString()
@@ -105,10 +104,11 @@ public class RegisterActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     }
-                }, Throwable::printStackTrace);
+                }, Throwable::printStackTrace);*/
     }
 
     void pgpKeysStore(String email_id) {
+        saveUsernamePassword();
         KeyPair keyPair = Utils.getKeyPair();
         Single.create(singleSubscriber -> {
             OkHttpClient client = new OkHttpClient();
@@ -179,6 +179,8 @@ public class RegisterActivity extends AppCompatActivity {
             SecuredPreferenceStore prefStore = SecuredPreferenceStore.getSharedInstance(getApplicationContext());
             prefStore.edit().putString("username", username.getText().toString()).apply();
             prefStore.edit().putString("password", password.getText().toString()).apply();
+            Log.d("tag",username.getText().toString());
+            Log.d("tag",password.getText().toString());
         } catch (IOException e) {
             e.printStackTrace();
         } catch (CertificateException e) {
