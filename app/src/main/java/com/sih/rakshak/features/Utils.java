@@ -21,17 +21,17 @@ public class Utils {
     public static KeyPair keyPair = null;
     private static Properties smtpProps;
 
-    public static Properties getProps() {
+    public static Properties getProps(Context context) {
         Properties props = new Properties();
         props.put("mail.imap.auth", "true");
         props.put("mail.imap.ssl.enable", "true");
-        props.put("mail.imap.host", CONSTANTS.host);
-        props.put("mail.imap.port", CONSTANTS.port);
+        props.put("mail.imap.host", CONSTANTS.getImapHost(context));
+        props.put("mail.imap.port", CONSTANTS.getImapPort(context));
         return props;
     }
 
     public static Session getSession(Context context) {
-        return Session.getInstance(getProps(),
+        return Session.getInstance(getProps(context),
                 new javax.mail.Authenticator() {
                     protected PasswordAuthentication getPasswordAuthentication() {
                         return new PasswordAuthentication(CONSTANTS.getUsername(context), CONSTANTS.getPassword(context));
@@ -64,7 +64,7 @@ public class Utils {
 
 
     public static Session getSmtpSession(SendMailActivity sendMailActivity) {
-        return Session.getInstance(getSmtpProps(),
+        return Session.getInstance(getSmtpProps(sendMailActivity),
                 new javax.mail.Authenticator() {
                     protected PasswordAuthentication getPasswordAuthentication() {
                         return new PasswordAuthentication(CONSTANTS.getUsername(sendMailActivity), CONSTANTS.getPassword(sendMailActivity));
@@ -72,11 +72,12 @@ public class Utils {
                 });
     }
 
-    public static Properties getSmtpProps() {
+    public static Properties getSmtpProps(Context context) {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", CONSTANTS.smtpHost);
-        props.put("mail.smtp.port", CONSTANTS.smtpPort);
-        return props;    }
+        props.put("mail.smtp.host", CONSTANTS.getSmtpHost(context));
+        props.put("mail.smtp.port", CONSTANTS.getSmtpPort(context));
+        return props;
+    }
 }

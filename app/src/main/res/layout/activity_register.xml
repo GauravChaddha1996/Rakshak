@@ -50,6 +50,34 @@
                 android:inputType="textPassword" />
         </android.support.design.widget.TextInputLayout>
 
+        <EditText
+            android:id="@+id/imaphost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Imap host"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/imapPort"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Imap port"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/smtphost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Smtp host"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/smtpPort"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Smtp port"
+            android:inputType="number" />
+
         <Button
             android:id="@+id/signup_button"
             android:layout_width="wrap_content"

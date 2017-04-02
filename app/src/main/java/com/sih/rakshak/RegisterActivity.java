@@ -48,6 +48,14 @@ public class RegisterActivity extends AppCompatActivity {
     TextInputLayout passwordTil;
     @BindView(R.id.signup_button)
     Button signupButton;
+    @BindView(R.id.imaphost)
+    EditText imaphost;
+    @BindView(R.id.imapPort)
+    EditText imapPort;
+    @BindView(R.id.smtphost)
+    EditText smtphost;
+    @BindView(R.id.smtpPort)
+    EditText smtpPort;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -179,8 +187,10 @@ public class RegisterActivity extends AppCompatActivity {
             SecuredPreferenceStore prefStore = SecuredPreferenceStore.getSharedInstance(getApplicationContext());
             prefStore.edit().putString("username", username.getText().toString()).apply();
             prefStore.edit().putString("password", password.getText().toString()).apply();
-            Log.d("tag",username.getText().toString());
-            Log.d("tag",password.getText().toString());
+            prefStore.edit().putString("imaphost", imaphost.getText().toString()).apply();
+            prefStore.edit().putString("imapport", imapPort.getText().toString()).apply();
+            prefStore.edit().putString("smtphost", smtphost.getText().toString()).apply();
+            prefStore.edit().putString("smtpport", smtpPort.getText().toString()).apply();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (CertificateException e) {

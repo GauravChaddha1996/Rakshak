@@ -47,9 +47,9 @@ public class InboxPresenter implements InboxPresenterVI {
         return Single.create(singleSubscriber -> {
             try {
                 Store store = getStore();
-                Log.d("tag",CONSTANTS.getUsername(context));
-                Log.d("tag",CONSTANTS.getPassword(context));
-                store.connect(CONSTANTS.host, CONSTANTS.getUsername(context), CONSTANTS.getPassword(context));
+                Log.d("tag", CONSTANTS.getUsername(context));
+                Log.d("tag", CONSTANTS.getPassword(context));
+                store.connect(CONSTANTS.getImapHost(context), CONSTANTS.getUsername(context), CONSTANTS.getPassword(context));
                 Folder inbox = store.getFolder("inbox");
                 Folder bin = store.getFolder("Trash");
                 if (!bin.exists()) {
@@ -83,7 +83,7 @@ public class InboxPresenter implements InboxPresenterVI {
             try {
                 vi.showProgressBar();
                 Store store = getStore();
-                store.connect(CONSTANTS.host, CONSTANTS.getUsername(context), CONSTANTS.getPassword(context));
+                store.connect(CONSTANTS.getImapHost(context), CONSTANTS.getUsername(context), CONSTANTS.getPassword(context));
                 Folder inbox = store.getFolder("inbox");
                 Folder bin = store.getFolder("Trash");
                 if (!bin.exists()) {
@@ -130,7 +130,7 @@ public class InboxPresenter implements InboxPresenterVI {
             try {
                 try {
                     Store store1 = getStore();
-                    store1.connect(CONSTANTS.host, CONSTANTS.getUsername(context), CONSTANTS.getPassword(context));
+                    store1.connect(CONSTANTS.getImapHost(context), CONSTANTS.getUsername(context), CONSTANTS.getPassword(context));
                     Folder inbox1 = store1.getFolder("inbox");
                     Folder bin1 = store1.getFolder("Trash");
                     if (!bin1.exists()) {
