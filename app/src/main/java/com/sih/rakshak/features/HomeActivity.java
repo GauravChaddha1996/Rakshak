@@ -11,7 +11,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
@@ -107,17 +106,12 @@ public class HomeActivity extends AppCompatActivity
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
-<<<<<<< HEAD
             if (currentFragment.getFragmentId() != null) {
-                if(currentFragment.getFragmentId() == FragmentIds.NOTESDETAIL) {
-                    ((NotesDetailFragment)currentFragment).checkandsave();
-=======
-            if (currentFragment.getBackToFragmentId() != null) {
-                if (currentFragment.getBackToFragmentId() == FragmentIds.NOTESDETAIL) {
+                if (currentFragment.getFragmentId() == FragmentIds.NOTESDETAIL) {
                     ((NotesDetailFragment) currentFragment).checkandsave();
->>>>>>> d23585a97a68765d1c9f6e6ac6719ef977196554
-                }
-                else if(currentFragment.getBackToFragmentId()!=null) setFragment(currentFragment.getBackToFragmentId());
+                    setFragment(FragmentIds.NOTES);
+                } else if (currentFragment.getBackToFragmentId() != null)
+                    setFragment(currentFragment.getBackToFragmentId());
             } else {
                 super.onBackPressed();
             }
@@ -200,6 +194,7 @@ public class HomeActivity extends AppCompatActivity
                 toReturnFragment = new MailFragment();
                 break;
             case NOTESDETAIL:
+                navView.setCheckedItem(R.id.nav_notes);
                 getSupportActionBar().setTitle(notesItem.getLastViewed());
                 toReturnFragment = new NotesDetailFragment();
                 break;
@@ -212,8 +207,8 @@ public class HomeActivity extends AppCompatActivity
         if (currentFragment != null && idForFragment == currentFragment.getFragmentId()) {
             return;
         }
-        if(currentFragment!=null && currentFragment.getFragmentId() == FragmentIds.NOTESDETAIL)
-            ((NotesDetailFragment)currentFragment).checkandsave();
+        if (currentFragment != null && currentFragment.getFragmentId() == FragmentIds.NOTESDETAIL)
+            ((NotesDetailFragment) currentFragment).checkandsave();
         BaseFragment newFragment = handleNavViewTransition(idForFragment);
         currentFragment = newFragment;
         FragmentManager manager = getSupportFragmentManager();

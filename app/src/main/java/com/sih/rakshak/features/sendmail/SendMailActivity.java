@@ -15,6 +15,7 @@ import com.sih.rakshak.R;
 import com.sih.rakshak.features.CONSTANTS;
 import com.sih.rakshak.features.Utils;
 
+import javax.crypto.SecretKey;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -212,7 +213,8 @@ public class SendMailActivity extends AppCompatActivity {
     }
 
     private String encrypt(String s) {
-        return s;
+        SecretKey secretKey = AESEncryption.getSecretEncryptionKey();
+        return AESEncryption.encryptText(s,secretKey);
         /*try {
             Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.ENCRYPT_MODE, Utils.getRSAPublicKey());

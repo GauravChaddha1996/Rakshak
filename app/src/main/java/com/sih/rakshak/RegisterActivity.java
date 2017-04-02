@@ -169,7 +169,12 @@ public class RegisterActivity extends AppCompatActivity {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                        } else {
+                        } else if (response.code() == 400) {
+                            Toast.makeText(this, "Public key already exists", Toast.LENGTH_LONG).show();
+                            startActivity(new Intent(this, HomeActivity.class));
+                            Log.d("tag", String.valueOf(response.code()));
+                            Log.d("tag", String.valueOf(response.message()));
+                        }else {
                             Log.d("tag", String.valueOf(response.code()));
                             Log.d("tag", String.valueOf(response.message()));
                             try {
