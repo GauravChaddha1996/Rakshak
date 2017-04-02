@@ -197,6 +197,7 @@ public class RegisterActivity extends AppCompatActivity {
             MediaType mediaType = MediaType.parse("application/json");
             RequestBody body = RequestBody.create(mediaType, "{\"email_id\":\"" + email_id + "\",\"public_key\":\"" +
                     keyPair.getPublic().toString() + "\"}");
+            Log.d("public key", String.valueOf(keyPair.getPublic().getEncoded()));
             Request request = new Request.Builder()
                     .url("https://pgpusers-af24.restdb.io/rest/user-details-test")
                     .post(body)
