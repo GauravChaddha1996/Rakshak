@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,8 @@ import com.sih.rakshak.base.BaseFragment;
 import com.sih.rakshak.features.FragmentIds;
 import com.sih.rakshak.features.HomeActivity;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
 
 import butterknife.ButterKnife;
@@ -34,6 +37,7 @@ public class NotesFragment extends BaseFragment {
     NotesListAdapter notesListAdapter;
     RealmResults<NotesItem> notes;
     TextView emptyText;
+    NotesItem note;
 
     public NotesFragment() {
     }
@@ -76,11 +80,20 @@ public class NotesFragment extends BaseFragment {
     }
 
     private void callEditNotes(Long s) {
-        NotesItem note;
         if(s==0){
             Random rand = new Random();
             Long temp=rand.nextLong();
-            note = realm.createObject(NotesItem.class,temp);
+            Date d = new Date();
+            CharSequence sdf = DateFormat.format("MMMM d, yyyy ", d.getTime());
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    note = realm.createObject(NotesItem.class,temp);
+                    note.setLastViewed(sdf.toString());
+                    note.setTitle("");
+                    note.setDescription("");
+                }
+            });
         }
         else {
              note = realm.where(NotesItem.class).equalTo("id",s).findFirst();

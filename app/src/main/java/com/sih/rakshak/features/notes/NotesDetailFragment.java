@@ -3,7 +3,6 @@ package com.sih.rakshak.features.notes;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.sih.rakshak.R;
 import com.sih.rakshak.base.BaseFragment;
@@ -25,14 +23,12 @@ import java.util.Date;
 import butterknife.ButterKnife;
 import io.realm.Realm;
 
-import static com.sih.rakshak.R.string.notes;
-
 public class NotesDetailFragment extends BaseFragment {
 
     private TextView title, desc;
     NotesItem note;
     Realm realm;
-    Boolean bool;
+    Boolean bool=false;
 
     public NotesDetailFragment() {
     }
@@ -45,8 +41,10 @@ public class NotesDetailFragment extends BaseFragment {
         initialiseViews(view);
         realm = Realm.getDefaultInstance();
         note = ((HomeActivity)getActivity()).getNotesItem();
+        Log.v("Tag",note.getDescription());
         title.setText(note.getTitle());
         desc.setText(note.getDescription());
+        if(!(note.getTitle().isEmpty())) setHasOptionsMenu(true);
         return view;
     }
 
@@ -64,6 +62,7 @@ public class NotesDetailFragment extends BaseFragment {
                 public void execute(Realm bgRealm) {
                     Log.v("tag","Trying");
                     note.deleteFromRealm();
+                    bool=true;
                 }
             });
             ((HomeActivity)getActivity()).setFragment(FragmentIds.NOTES);
@@ -73,7 +72,20 @@ public class NotesDetailFragment extends BaseFragment {
     }
 
     public void checkandsave(){
-        if(title.getText().toString().isEmpty()) note.deleteFromRealm();
+        if(bool) return;
+        if(title.getText().toString().isEmpty()){
+            Log.v("Tag","Cant do anything");
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    try{
+                        note.deleteFromRealm();
+                    }catch (Exception e){
+                        Log.v("Tag",e.toString());
+                    }
+                }
+            });
+        }
         else{
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
@@ -95,12 +107,12 @@ public class NotesDetailFragment extends BaseFragment {
 
     @Override
     public FragmentIds getFragmentId() {
-        return FragmentIds.NOTES;
+        return FragmentIds.NOTESDETAIL;
     }
 
     @Override
     public FragmentIds getBackToFragmentId() {
-        return FragmentIds.INBOX;
+        return FragmentIds.NOTES;
     }
 
 }
