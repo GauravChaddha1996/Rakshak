@@ -1,5 +1,9 @@
 package com.sih.rakshak.features;
 
+import android.content.Context;
+
+import com.sih.rakshak.features.sendmail.SendMailActivity;
+
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -15,21 +19,22 @@ import javax.mail.Session;
 
 public class Utils {
     public static KeyPair keyPair = null;
+    private static Properties smtpProps;
 
-    public static Properties getProps() {
+    public static Properties getProps(Context context) {
         Properties props = new Properties();
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", CONSTANTS.host);
-        props.put("mail.smtp.port", "587");
+        props.put("mail.imap.auth", "true");
+        props.put("mail.imap.ssl.enable", "true");
+        props.put("mail.imap.host", CONSTANTS.getImapHost(context));
+        props.put("mail.imap.port", CONSTANTS.getImapPort(context));
         return props;
     }
 
-    public static Session getSession() {
-        return Session.getInstance(getProps(),
+    public static Session getSession(Context context) {
+        return Session.getInstance(getProps(context),
                 new javax.mail.Authenticator() {
                     protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(CONSTANTS.username, CONSTANTS.password);
+                        return new PasswordAuthentication(CONSTANTS.getUsername(context), CONSTANTS.getPassword(context));
                     }
                 });
     }
@@ -38,7 +43,7 @@ public class Utils {
         return getKeyPair().getPublic();
     }
 
-    private static KeyPair getKeyPair() {
+    public static KeyPair getKeyPair() {
         if (keyPair == null) {
             keyPair = generateKeys();
         }
@@ -58,4 +63,21 @@ public class Utils {
     }
 
 
+    public static Session getSmtpSession(SendMailActivity sendMailActivity) {
+        return Session.getInstance(getSmtpProps(sendMailActivity),
+                new javax.mail.Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(CONSTANTS.getUsername(sendMailActivity), CONSTANTS.getPassword(sendMailActivity));
+                    }
+                });
+    }
+
+    public static Properties getSmtpProps(Context context) {
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", CONSTANTS.getSmtpHost(context));
+        props.put("mail.smtp.port", CONSTANTS.getSmtpPort(context));
+        return props;
+    }
 }

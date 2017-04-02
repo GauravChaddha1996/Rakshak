@@ -1,8 +1,5 @@
 package com.sih.rakshak.features.inbox;
 
-import java.util.Properties;
-
-import javax.mail.Session;
 import javax.mail.Store;
 
 /**
@@ -10,8 +7,6 @@ import javax.mail.Store;
  */
 
 public interface InboxPresenterVI {
-    Properties getProps();
-    Session getSession();
     Store getStore();
 
 }

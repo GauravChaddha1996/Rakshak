@@ -13,7 +13,6 @@ public class RakshakApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Realm.init(this);
-     //   LeakCanary.install(this);
     }
 }
 

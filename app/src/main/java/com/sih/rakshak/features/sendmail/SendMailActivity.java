@@ -15,13 +15,6 @@ import com.sih.rakshak.R;
 import com.sih.rakshak.features.CONSTANTS;
 import com.sih.rakshak.features.Utils;
 
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -61,7 +54,7 @@ public class SendMailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_mail);
         ButterKnife.bind(this);
-        from.setText(CONSTANTS.username);
+        from.setText(CONSTANTS.getUsername(this));
         createListeners();
     }
 
@@ -184,7 +177,7 @@ public class SendMailActivity extends AppCompatActivity {
     void sendEmail() {
         if (errorChecks()) {
             try {
-                Session session = Utils.getSession();
+                Session session = Utils.getSmtpSession(this);
                 // Create a default MimeMessage object.
                 Message message = new MimeMessage(session);
 
@@ -219,7 +212,8 @@ public class SendMailActivity extends AppCompatActivity {
     }
 
     private String encrypt(String s) {
-        try {
+        return s;
+        /*try {
             Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.ENCRYPT_MODE, Utils.getRSAPublicKey());
             byte[] encryptedBytes = cipher.doFinal(s.getBytes());
@@ -229,6 +223,6 @@ public class SendMailActivity extends AppCompatActivity {
                 InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
             e.printStackTrace();
         }
-        return "Oh oh it went bad";
+        return "Oh oh it went bad";*/
     }
 }

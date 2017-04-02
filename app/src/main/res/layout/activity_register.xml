@@ -1,0 +1,129 @@
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:orientation="vertical">
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/username_til"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="16dp"
+            android:textColorHint="@color/card_text"
+            app:errorEnabled="true"
+            app:errorTextAppearance="@style/TextAppearance.Design.Error"
+            app:hintAnimationEnabled="true"
+            app:hintEnabled="true">
+
+            <EditText
+                android:id="@+id/username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Email"
+                android:inputType="textEmailAddress" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/password_til"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:textColorHint="@color/card_text"
+            app:errorEnabled="true"
+            app:errorTextAppearance="@style/TextAppearance.Design.Error"
+            app:hintAnimationEnabled="true"
+            app:hintEnabled="true">
+
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Password"
+                android:inputType="textPassword" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/gmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Gmail Service" />
+
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/yahooService"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Yahoo Service" />
+
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/rakshak"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Our Email Service" />
+
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/otherService"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Other Service" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/imaphost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Imap Host"
+                android:inputType="text"
+                android:text="imap.gmail.com" />
+
+            <EditText
+                android:id="@+id/imapPort"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Imap Port"
+                android:inputType="number"
+                android:text="993" />
+
+            <EditText
+                android:id="@+id/smtphost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Smtp Host"
+                android:inputType="text"
+                android:text="smtp.gmail.com" />
+
+            <EditText
+                android:id="@+id/smtpPort"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Smtp port"
+                android:inputType="number"
+                android:text="587" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/signup_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="8dp"
+            android:padding="8dp"
+            android:text="Sign Up"
+            android:textColor="@color/colorAccent"
+            android:textSize="25sp" />
+
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>
