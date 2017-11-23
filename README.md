@@ -4,3 +4,5 @@ Secure Email Client. Protect your privacy from email providers. A PGP end-to-end
 # Screenshots
 The app was built in a 36 hour hackathon, and had focus on encryption. (And thus the state of UI)
 
+
+![Rakshak App](https://github.com/GauravChaddha1996/Rakshak/blob/master/rakshak2.png)
